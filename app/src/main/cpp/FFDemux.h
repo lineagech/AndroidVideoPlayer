@@ -17,12 +17,15 @@ public:
     virtual bool Open(const char* url);
 
     virtual XParameter GetVPara();
+    virtual XParameter GetAPara();
 
     /* Read one frame, released by users */
     virtual XData Read();
 
 private:
     AVFormatContext* ic = NULL;
+    int audioStream = 1;
+    int videoStream = 0;
 };
 
 

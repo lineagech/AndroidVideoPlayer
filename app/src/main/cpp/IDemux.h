@@ -18,6 +18,7 @@ public:
     virtual bool Open(const char* url) = 0;
 
     virtual XParameter GetVPara() = 0;
+    virtual XParameter GetAPara() = 0;
 
     /* Read one frame, released by users */
     virtual XData Read() = 0;

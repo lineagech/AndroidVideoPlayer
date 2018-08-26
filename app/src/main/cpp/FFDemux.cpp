@@ -43,6 +43,10 @@ bool FFDemux::Open(const char* url)
     this->totalMs = ic->duration/(AV_TIME_BASE/1000); // use micro second
     XLOGI("total %d us", this->totalMs);
 
+    /* To get video/audio stream index */
+    GetVPara();
+    GetAPara();
+
     return true;
 }
 
@@ -57,8 +61,29 @@ XParameter FFDemux::GetVPara()
         XLOGE("av_find_best_stream Failed.");
         return XParameter();
     }
+    videoStream = re;
     XParameter para;
     para.para = ic->streams[re]->codecpar;
+
+    return para;
+}
+
+XParameter FFDemux::GetAPara()
+{
+    if( !ic ) return XParameter();
+
+    int re;
+    re = av_find_best_stream( this->ic, AVMEDIA_TYPE_AUDIO, -1, -1, 0, 0 );
+    if( re < 0 )
+    {
+        XLOGE("av_find_best_stream Failed.");
+        return XParameter();
+    }
+    audioStream = re;
+    XParameter para;
+    para.para = ic->streams[re]->codecpar;
+
+    return para;
 }
 
 /* Read one frame, released by users */
@@ -80,6 +105,15 @@ XData FFDemux::Read()
 
     d.data = (unsigned char*)packet;
     d.size = packet->size;
+
+    if( packet->stream_index == audioStream )
+        d.isAudio = true;
+    else if( packet->stream_index == videoStream )
+        d.isAudio = false;
+    else {
+        av_packet_free(&packet);
+        return XData();
+    }
 
     return d;
 }
