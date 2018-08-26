@@ -2,6 +2,7 @@
 #include <string>
 
 #include "FFDemux.h" // for test
+#include "XLog.h"
 
 extern "C" JNIEXPORT jstring
 
@@ -11,14 +12,12 @@ Java_xplay_xplay_MainActivity_stringFromJNI(
         jobject /* this */) {
     std::string hello = "Hello from C++";
 
-    // for test
+    // for test //////////////////
     IDemux* de = new FFDemux;
     de->Open("/sdcard/1080.mp4");
-    for(;;)
-    {
-        XData d = de->Read();
-    }
-    //
+
+    de->Start();
+    ///////////////////////////////
 
     return env->NewStringUTF(hello.c_str());
 }

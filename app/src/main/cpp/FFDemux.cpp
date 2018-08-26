@@ -62,6 +62,9 @@ XData FFDemux::Read()
     }
     XLOGI("Packet Size is %d, PTS is %d", packet->size, packet->pts);
 
+    d.data = (unsigned char*)packet;
+    d.size = packet->size;
+
     return d;
 }
 

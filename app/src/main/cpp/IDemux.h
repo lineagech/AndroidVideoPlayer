@@ -6,9 +6,10 @@
 #define XPLAY_IDEMUX_H
 
 #include "XData.h"
+#include "XThread.h"
 
 /* Unpack Interface */
-class IDemux {
+class IDemux: public XThread {
 public:
 
     /* Open the files or streaming: rmtp, http, rstp */
@@ -19,6 +20,9 @@ public:
 
     /* Total time */
     int totalMs = 0;
+
+protected:
+    virtual void Main();
 };
 
 
