@@ -26,7 +26,8 @@ bool FFDemux::Open(const char* url)
     XLOGI("FFDemux Open %s Succeed!", url);
 
     /* Read file information */
-    int re = avformat_find_stream_info(&ic, 0);
+    /* Will fill AVCodecPrameters in */
+    re = avformat_find_stream_info(ic, 0);
     if( re != 0)
     {
         // Will lock mutex
@@ -45,6 +46,21 @@ bool FFDemux::Open(const char* url)
     return true;
 }
 
+XParameter FFDemux::GetVPara()
+{
+    if( !ic ) return XParameter();
+
+    int re;
+    re = av_find_best_stream( this->ic, AVMEDIA_TYPE_VIDEO, -1, -1, 0, 0 );
+    if( re < 0 )
+    {
+        XLOGE("av_find_best_stream Failed.");
+        return XParameter();
+    }
+    XParameter para;
+    para.para = ic->streams[re]->codecpar;
+}
+
 /* Read one frame, released by users */
 XData FFDemux::Read()
 {
@@ -60,7 +76,7 @@ XData FFDemux::Read()
         av_packet_free(&packet);
         return XData();
     }
-    XLOGI("Packet Size is %d, PTS is %d", packet->size, packet->pts);
+    //XLOGI("Packet Size is %d, PTS is %d", packet->size, packet->pts);
 
     d.data = (unsigned char*)packet;
     d.size = packet->size;

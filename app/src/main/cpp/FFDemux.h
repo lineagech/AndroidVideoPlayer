@@ -15,6 +15,9 @@ public:
     FFDemux();
     /* Open the files or streaming: rmtp, http, rstp */
     virtual bool Open(const char* url);
+
+    virtual XParameter GetVPara();
+
     /* Read one frame, released by users */
     virtual XData Read();
 

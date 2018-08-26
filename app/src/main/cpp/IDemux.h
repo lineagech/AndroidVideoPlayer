@@ -7,13 +7,17 @@
 
 #include "XData.h"
 #include "XThread.h"
+#include "IObserver.h"
+#include "XParameter.h"
 
 /* Unpack Interface */
-class IDemux: public XThread {
+class IDemux: public IObserver {
 public:
 
     /* Open the files or streaming: rmtp, http, rstp */
     virtual bool Open(const char* url) = 0;
+
+    virtual XParameter GetVPara() = 0;
 
     /* Read one frame, released by users */
     virtual XData Read() = 0;

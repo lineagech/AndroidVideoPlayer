@@ -5,6 +5,7 @@
 #ifndef XPLAY_XTHREAD_H
 #define XPLAY_XTHREAD_H
 
+void XSleep(int ms);
 /* Use C++11 Thread Library */
 class XThread {
 public:
@@ -18,6 +19,10 @@ public:
 
 private:
     void ThreadMain();
+
+protected:
+    bool isExit = false;
+    bool isRunning = false;
 };
 
 
