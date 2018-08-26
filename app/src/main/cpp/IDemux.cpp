@@ -11,7 +11,7 @@ void IDemux::Main()
     {
         XData d = Read();
         if( d.size > 0 ) {
-            Notify(d);
+            Notify(d); // Blocking mode, if packet list is full
         }
     }
 }

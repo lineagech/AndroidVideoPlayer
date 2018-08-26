@@ -8,7 +8,7 @@ extern "C" {
 #include "FFDecode.h"
 #include "XLog.h"
 
-virtual bool FFDecode::Open( XParameter para )
+bool FFDecode::Open( XParameter para )
 {
     if( !para.para ) return false;
     AVCodecParameters* p_avcodec_para = para.para;
@@ -71,6 +71,8 @@ XData FFDecode::RecvFrame()
 
     if( codec_context->codec_type == AVMEDIA_TYPE_VIDEO )
         data.size = (frame->linesize[0] + frame->linesize[1] + frame->linesize[2]) * frame->height;
+    else
+        data.size = av_get_bytes_per_sample( (AVSampleFormat)frame->format/*AVSampleFormat*/ ) *  (frame->nb_samples/* per chanel */) * 2 /* channel num*/ ;
 
-    return
+    return data;
 }

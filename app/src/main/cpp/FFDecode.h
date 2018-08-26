@@ -19,7 +19,7 @@ public:
     /* Future Model, send packet to a thread and return immediately */
     virtual bool SendPacket( XData packet );
 
-    /* Get decoding results from queue */
+    /* Get decoding results from queue, if re-called, will use previous heap memory -> thread-unsafe */
     virtual XData RecvFrame();
 
 protected:

@@ -27,10 +27,12 @@ public:
     virtual void Update( XData packet );
 
     bool isAudio = false;
+    int max_packet_list_size = 100; //around 4 sec duration buffer
 
 protected:
     virtual void Main();
     std::list<XData> packet_list;
+    std::mutex       packet_list_mutex;
 
 };
 
