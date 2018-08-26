@@ -10,13 +10,21 @@
 #include "IDecode.h"
 
 struct AVCodecContext;
+struct AVFrame;
 
 class FFDecode: public IDecode {
 public:
     virtual bool Open( XParameter para );
 
+    /* Future Model, send packet to a thread and return immediately */
+    virtual bool SendPacket( XData packet );
+
+    /* Get decoding results from queue */
+    virtual XData RecvFrame();
+
 protected:
     AVCodecContext* codec_context = 0;
+    AVFrame* frame = 0;
 };
 
 
