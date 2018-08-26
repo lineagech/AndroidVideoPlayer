@@ -26,13 +26,23 @@ Java_xplay_xplay_MainActivity_stringFromJNI(
 
     TestObs* tobs = new TestObs();
     IDemux* de = new FFDemux;
-    de->AddObs(tobs);
+    //de->AddObs(tobs);
     de->Open("/sdcard/1080.mp4");
 
     IDecode* vdecode = new FFDecode();
     vdecode->Open(de->GetVPara());
 
+    IDecode* adecode = new FFDecode();
+    adecode->Open(de->GetAPara());
+
+    // Send every date to vdecode and adecode
+    de->AddObs(vdecode);
+    de->AddObs(adecode);
+
     de->Start();
+    vdecode->Start();
+    adecode->Start();
+
     XSleep(3000);
     de->Stop();
 

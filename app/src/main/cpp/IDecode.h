@@ -8,6 +8,7 @@
 
 #include "XParameter.h"
 #include "IObserver.h"
+#include <list>
 
 /* Decode Interface */
 class IDecode : public IObserver
@@ -21,6 +22,16 @@ public:
 
     /* Get decoding results from queue */
     virtual XData RecvFrame() = 0;
+
+    /* Main entity will notify IDecode when Read done */
+    virtual void Update( XData packet );
+
+    bool isAudio = false;
+
+protected:
+    virtual void Main();
+    std::list<XData> packet_list;
+
 };
 
 

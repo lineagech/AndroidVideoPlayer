@@ -3,3 +3,15 @@
 //
 
 #include "IDecode.h"
+
+void IDecode::Update( XData packet )
+{
+    if( packet.isAudio != isAudio ) return;
+
+
+}
+
+void IDecode::Main()
+{
+
+}
