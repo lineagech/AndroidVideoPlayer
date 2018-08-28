@@ -3,14 +3,16 @@
 //
 
 #include "IObserver.h"
+#include "XLog.h"
 
 /* Main entity function, adding an observer */
 void IObserver::AddObs( IObserver* observer )
 {
-    if( observer == nullptr ) return;
+    if( !observer ) return;
     mutex.lock();
     observers.push_back( observer );
     mutex.unlock();
+    XLOGE("Add one observer");
 }
 
 /* Notify all observers */

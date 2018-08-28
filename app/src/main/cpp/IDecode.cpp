@@ -21,6 +21,8 @@ void IDecode::Update( XData packet )
 
         packet_list_mutex.unlock();
         XSleep(1); // Blocking mode
+
+        //XLOGE("Main Thread %d Update", isAudio);
     }
 }
 
@@ -43,15 +45,16 @@ void IDecode::Main()
         {
             /* One packet sent can result in multiple decoded frames, using while to handle that */
             while( !isExit ) {
-                XData decoded_frame = this->RecvFrame();
+                XData decoded_frame = RecvFrame();
                 if( !decoded_frame.data ) break;
-                XLOGI("Recv Frame Size %d", decoded_frame.size);
+                //XLOGI("Recv Frame Size %d", decoded_frame.size);
                 /* Notify next observer when decoded frame data is ready */
                 this->Notify( decoded_frame );
             }
         }
         recv_packet.Drop();
         packet_list_mutex.unlock();
+
     }
 
 }

@@ -3,6 +3,8 @@
 //
 
 #include "XData.h"
+#include "XLog.h"
+
 extern "C"{
 #include <libavformat/avformat.h>
 }

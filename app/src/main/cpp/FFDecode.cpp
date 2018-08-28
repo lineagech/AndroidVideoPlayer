@@ -69,10 +69,15 @@ XData FFDecode::RecvFrame()
     if( re != 0 ) return XData(); // Decoding failed.
     data.data = (unsigned char*) frame;
 
-    if( codec_context->codec_type == AVMEDIA_TYPE_VIDEO )
+    if( codec_context->codec_type == AVMEDIA_TYPE_VIDEO ) {
         data.size = (frame->linesize[0] + frame->linesize[1] + frame->linesize[2]) * frame->height;
-    else
-        data.size = av_get_bytes_per_sample( (AVSampleFormat)frame->format/*AVSampleFormat*/ ) *  (frame->nb_samples/* per chanel */) * 2 /* channel num*/ ;
-
+        data.width = frame->width;
+        data.height = frame->height;
+    }
+    else {
+        data.size = av_get_bytes_per_sample((AVSampleFormat) frame->format/*AVSampleFormat*/ ) *
+                    (frame->nb_samples/* per chanel */) * 2 /* channel num*/ ;
+    }
+    memcpy(data.datas, frame->data, sizeof(data.datas));
     return data;
 }

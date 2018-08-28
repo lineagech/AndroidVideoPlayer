@@ -1,10 +1,14 @@
 #include <jni.h>
 #include <string>
+#include <android/native_window_jni.h>
 
 #include "FFDemux.h"    // for test
 #include "XLog.h"
 #include "IDecode.h"    // for test
 #include "FFDecode.h"   // for test
+
+#include "IVideoView.h"
+#include "GLVideoView.h"
 
 class TestObs: public IObserver{
 public:
@@ -13,6 +17,8 @@ public:
         XLOGI("TestObs Update data is %d", d.size);
     }
 };
+
+IVideoView* iview = NULL;
 
 extern "C" JNIEXPORT jstring
 
@@ -39,14 +45,30 @@ Java_xplay_xplay_MainActivity_stringFromJNI(
     de->AddObs(vdecode);
     de->AddObs(adecode);
 
-    de->Start();
-    vdecode->Start();
-    adecode->Start();
+    iview = new GLVideoView();
+    vdecode->AddObs(iview);
 
-    XSleep(3000);
-    de->Stop();
+    de->Start();
+    XLOGI("Demux Start!");
+    vdecode->Start();
+    XLOGI("Video Decoding Start!");
+    adecode->Start();
+    XLOGI("Audio Decoding Start!");
+    ///XSleep(3000);
+    //de->Stop();
 
     ///////////////////////////////
 
     return env->NewStringUTF(hello.c_str());
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_xplay_xplay_XPlay_InitView(JNIEnv *env, jobject instance, jobject surface) {
+
+    ANativeWindow* window = ANativeWindow_fromSurface( env, surface );
+    iview->SetRender( window );
+    //XEGL::Get()->Init( window );
+    //XShader shader;
+    //shader.Init();
+
 }
