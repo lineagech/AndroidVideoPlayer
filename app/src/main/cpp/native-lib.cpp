@@ -10,6 +10,8 @@
 #include "IVideoView.h"
 #include "GLVideoView.h"
 #include "FFResample.h"
+#include "IAudioPlay.h"
+#include "SLAudioPlay.h"
 
 class TestObs: public IObserver{
 public:
@@ -50,8 +52,13 @@ Java_xplay_xplay_MainActivity_stringFromJNI(
     vdecode->AddObs(iview);
 
     IResample* resample = new FFResample();
-    resample->Open(de->GetAPara());
+    XParameter outPara = de->GetAPara();
+    resample->Open(outPara);
     adecode->AddObs(resample);
+
+    IAudioPlay* audioPlay = new SLAudioPlay();
+    audioPlay->StartPlay(outPara);
+    resample->AddObs(audioPlay);
 
     de->Start();
     XLOGI("Demux Start!");

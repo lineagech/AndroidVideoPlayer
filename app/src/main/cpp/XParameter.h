@@ -10,6 +10,8 @@ struct AVCodecParameters; // direct declaration, dont care its real implementati
 class XParameter {
 public:
     AVCodecParameters* para;
+    int channels = 2;
+    int sample_rate = 44100;
 };
 
 

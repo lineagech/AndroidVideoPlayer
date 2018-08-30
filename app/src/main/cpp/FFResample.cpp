@@ -15,9 +15,9 @@ bool FFResample::Open(XParameter in, XParameter out )
     actx = swr_alloc();
     actx = swr_alloc_set_opts(
             actx,
-            av_get_default_channel_layout(2 /*ac->channels*/),
+            av_get_default_channel_layout(out.channels),
             AV_SAMPLE_FMT_S16,
-            in.para->sample_rate,
+            out.sample_rate,
             av_get_default_channel_layout(in.para->channels),
             (AVSampleFormat)in.para->format,
             in.para->sample_rate, 0, 0);
@@ -49,7 +49,7 @@ XData FFResample::Resample( XData indata)
     int size = outChannels * frame->nb_samples * av_get_bytes_per_sample((AVSampleFormat)outFormat);
     if( size <= 0 ) return XData();
 
-    if(out.Alloc(size)) {
+    if(!out.Alloc(size)) {
         XLOGE("XData Alloc Failed!");
         return XData();
     }
