@@ -28,4 +28,40 @@ bool FFResample::Open(XParameter in, XParameter out )
     }
     XLOGI("swr_init Succeeded.");
 
+    outChannels = in.para->channels;
+    outFormat = AV_SAMPLE_FMT_S16;
+    return true;
+
+}
+
+XData FFResample::Resample( XData indata)
+{
+    if( indata.size <= 0 || !indata.data ) return XData();
+    if( !actx ) return XData();
+    XLOGE("indata size is %d", indata.size);
+
+    /*  Allocate Memory */
+    XData out;
+    AVFrame* frame = (AVFrame* )indata.data;
+    //out.Alloc();
+
+    /* Calculate size */
+    int size = outChannels * frame->nb_samples * av_get_bytes_per_sample((AVSampleFormat)outFormat);
+    if( size <= 0 ) return XData();
+
+    if(out.Alloc(size)) {
+        XLOGE("XData Alloc Failed!");
+        return XData();
+    }
+    uint8_t* outArr[2] = {0};
+    outArr[0] = out.data;
+    int len = swr_convert(actx, outArr, frame->nb_samples, (const uint8_t**)frame->data, frame->nb_samples );
+
+    if( len <= 0) {
+        out.Drop();
+        return XData();
+    }
+    XLOGE("swr_convert Succeeded, %d", len);
+
+    return out;
 }

@@ -9,6 +9,7 @@
 
 #include "IVideoView.h"
 #include "GLVideoView.h"
+#include "FFResample.h"
 
 class TestObs: public IObserver{
 public:
@@ -47,6 +48,10 @@ Java_xplay_xplay_MainActivity_stringFromJNI(
 
     iview = new GLVideoView();
     vdecode->AddObs(iview);
+
+    IResample* resample = new FFResample();
+    resample->Open(de->GetAPara());
+    adecode->AddObs(resample);
 
     de->Start();
     XLOGI("Demux Start!");
