@@ -14,6 +14,17 @@ static SLObjectItf player = NULL;
 static SLPlayItf iplayer = NULL;
 static SLAndroidSimpleBufferQueueItf pcmQue =NULL;
 
+SLAudioPlay::SLAudioPlay()
+{
+    buf = new unsigned char[1024*1024];
+}
+
+SLAudioPlay::~SLAudioPlay()
+{
+    delete buf;
+    buf = 0;
+}
+
 static SLEngineItf CreateSL()
 {
     SLresult re;
@@ -30,7 +41,7 @@ static SLEngineItf CreateSL()
 static void PcmCall(SLAndroidSimpleBufferQueueItf bf,void *contex)
 {
     SLAudioPlay *ap = (SLAudioPlay *)contex;
-    if(!ap)
+    if( !ap )
     {
         XLOGE("PcmCall Failed Contex is NULL.");
         return;
@@ -40,28 +51,27 @@ static void PcmCall(SLAndroidSimpleBufferQueueItf bf,void *contex)
 
 void SLAudioPlay::PlayCall(void *bufq)
 {
-    if(!bufq)return;
+    if( !bufq )return;
     SLAndroidSimpleBufferQueueItf bf = (SLAndroidSimpleBufferQueueItf)bufq;
 
-    XData d ;//= GetData();
-    if(d.size<=0)
+    /* blocking mode */
+    XData d = GetData();
+    if( d.size <= 0 )
     {
-        XLOGE("GetData() size is 0");
+        XLOGE("GetData() Size is 0... ");
         return;
     }
-    if(!buf)
-        return;
+    if( !buf ) return;
     memcpy(buf,d.data,d.size);
     (*bf)->Enqueue(bf,buf,d.size);
     d.Drop();
-
 }
 
 bool SLAudioPlay::StartPlay(XParameter out)
 {
     /* Create Engine */
     eng = CreateSL();
-    if(eng)
+    if( eng )
     {
         XLOGI("CreateSL success！ ");
     }
@@ -74,13 +84,13 @@ bool SLAudioPlay::StartPlay(XParameter out)
     /* Ouput Mix */
     SLresult re = 0;
     re = (*eng)->CreateOutputMix(eng,&mix,0,0,0);
-    if(re !=SL_RESULT_SUCCESS )
+    if( re !=SL_RESULT_SUCCESS )
     {
         XLOGE("SL_RESULT_SUCCESS failed!");
         return false;
     }
     re = (*mix)->Realize(mix,SL_BOOLEAN_FALSE);
-    if(re !=SL_RESULT_SUCCESS )
+    if( re !=SL_RESULT_SUCCESS )
     {
         XLOGE("(*mix)->Realize failed!");
         return false;

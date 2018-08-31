@@ -23,3 +23,37 @@ void IAudioPlay::Update(XData data)
         break;
     }
 }
+XData IAudioPlay::GetData()
+{
+    XData d;
+
+    while( !isExit )
+    {
+        frames_mutex.lock();
+        if( !frames.empty() )
+        {
+            d = frames.front();
+            frames.pop_front();
+            frames_mutex.unlock();
+            return d;
+        }
+        frames_mutex.unlock();
+        XSleep(1);
+    }
+
+    return d;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
