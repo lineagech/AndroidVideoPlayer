@@ -11,23 +11,30 @@ class CXTexture:public XTexture
 {
 public:
     XShader shader;
-    virtual bool Init( void* win )
-    {
+    XTEXTURE_TYPE type;
+    virtual bool Init( void* win, XTEXTURE_TYPE type )
+    {   
+        this->type = type;
         if( !win ) {
             XLOGE("XTexture Failed.");
             return false;
         }
         if( !XEGL::Get()->Init(win) ) return false;
-        shader.Init();
+        shader.Init((XSHADER_TYPE)type);
         XLOGE("XTexture Init Succeeded.");
         return true;
     }
     virtual void Draw(unsigned char* data[], int width, int height)
-    {
+    {   
         shader.GetTexture(0, width, height, data[0]);
-        shader.GetTexture(1, width/2, height/2, data[1]);
-        shader.GetTexture(2, width/2, height/2, data[2]);
-
+        if( type == XTEXTURE_YUV420P )
+        {
+            shader.GetTexture(1, width/2, height/2, data[1]); // U
+            shader.GetTexture(2, width/2, height/2, data[2]); // V
+        }
+        else {
+            shader.GetTexture(1, width/2, height/2, data[1], true); // UV
+        }
         shader.Draw();
         XEGL::Get()->Draw();
     }

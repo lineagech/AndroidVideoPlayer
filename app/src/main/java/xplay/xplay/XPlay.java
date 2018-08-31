@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 
 /* Inherit Window Interface */
-public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback {
+public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback, GLSurfaceView.Renderer {
     public XPlay(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -15,6 +15,9 @@ public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder)
     {
         InitView(holder.getSurface());
+
+        /* Need to set on Android 8.0 */
+        setRenderer(this);
     }
 
     @Override

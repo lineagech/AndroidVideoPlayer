@@ -58,7 +58,7 @@ static GLuint InitShader(const char* code, GLint type)
 }
 
 
-bool XShader::Init()
+bool XShader::Init( XSHADER_TYPE type )
 {
     vsh = InitShader( vertexShader, GL_VERTEX_SHADER );
     if( vsh == 0 ) {
@@ -150,9 +150,11 @@ void XShader::Draw()
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-void XShader::GetTexture(unsigned int index, int width, int height, unsigned char *buf)
+void XShader::GetTexture(unsigned int index, int width, int height, unsigned char *buf, bool is_alpha)
 {
     /* Write to buffer */
+    unsigned int format = GL_LUMINANCE;
+    //if( isa ) format = GL_LUMINANCE_ALPHA;
     if( texts[index] == 0 ) {
         glGenTextures(1, &texts[index]);
 
@@ -161,7 +163,7 @@ void XShader::GetTexture(unsigned int index, int width, int height, unsigned cha
                         GL_TEXTURE_MIN_FILTER/*Specifies the symbolic name of a single-valued texture parameter.*/,
                         GL_LINEAR/*the weighted average of the four texture elements that are closest to the specified texture coordinates*/);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, width, height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL/*Specifies a pointer to the image data in memory.*/);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, NULL/*Specifies a pointer to the image data in memory.*/);
 
     }
 
@@ -170,6 +172,6 @@ void XShader::GetTexture(unsigned int index, int width, int height, unsigned cha
     /* Bind to texts[0] */
     glBindTexture(GL_TEXTURE_2D, texts[index]);
     /* Substitute content */
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_LUMINANCE, GL_UNSIGNED_BYTE, buf);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, buf);
 
 }

@@ -14,6 +14,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    
+        /* Remove title */
+        supportRequestWindowFeature( Window.FEATURE_NO_TITLE );
+        /* Full Screen and Hiding status */
+        getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        /* Landscape orientation */
+        setRequestOrientation( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE );
+
         setContentView(R.layout.activity_main);
 
         // Example of a call to a native method

@@ -22,16 +22,9 @@ public:
 };
 
 IVideoView* iview = NULL;
-
-extern "C" JNIEXPORT jstring
-
-JNICALL
-Java_xplay_xplay_MainActivity_stringFromJNI(
-        JNIEnv *env,
-        jobject /* this */) {
-    std::string hello = "Hello from C++";
-
-    // for test //////////////////
+extern "C" jint JNI_OnLoad(JavaVM* vm, void* res)
+{
+    FFDecode::InitHard(vm);
 
     TestObs* tobs = new TestObs();
     IDemux* de = new FFDemux;
@@ -68,6 +61,21 @@ Java_xplay_xplay_MainActivity_stringFromJNI(
     XLOGI("Audio Decoding Start!");
     ///XSleep(3000);
     //de->Stop();
+
+    return JNI_VERSION_1_4;
+}
+
+extern "C" JNIEXPORT jstring
+
+JNICALL
+Java_xplay_xplay_MainActivity_stringFromJNI(
+        JNIEnv *env,
+        jobject /* this */) {
+    std::string hello = "Hello from C++";
+
+    // for test //////////////////
+
+    
 
     ///////////////////////////////
 

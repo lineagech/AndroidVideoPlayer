@@ -5,12 +5,19 @@
 #ifndef XPLAY_XSHADER_H
 #define XPLAY_XSHADER_H
 
+/* Re-define enum to make independent */
+enum XSHADER_TYPE
+{
+	XSHADER_YUV420P = 0, // Y:4, U:1, V:1
+	XSHADER_NV12 = 25,   // Y:4, UV:1
+	XSHADER_NV21 = 26    // Y:4, VU:1
+}
 
 class XShader {
 public:
-    virtual bool Init();
+    virtual bool Init( XSHADER_TYPE type = XSHADER_YUV420P );
     /* obtain texture and map to memory */
-    virtual void GetTexture( unsigned int index, int width, int height, unsigned char* buf );
+    virtual void GetTexture( unsigned int index, int width, int height, unsigned char* buf, bool is_alpha=false );
     virtual void Draw();
 
 protected:

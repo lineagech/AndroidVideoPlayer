@@ -15,7 +15,7 @@ class IDecode : public IObserver
 {
 public:
     /* open decoder */
-    virtual bool Open( XParameter para ) = 0;
+    virtual bool Open( XParameter para, bool isHard=false ) = 0;
 
     /* Future Model, send packet to a thread and return immediately */
     virtual bool SendPacket( XData packet ) = 0;
