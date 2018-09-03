@@ -63,12 +63,49 @@ void SLAudioPlay::PlayCall(void *bufq)
     }
     if( !buf ) return;
     memcpy(buf,d.data,d.size);
+
+    mutex.lock();
     (*bf)->Enqueue(bf,buf,d.size);
+    mutex.unlock();
     d.Drop();
 }
 
+void SLAudioPlay::Close()
+{   
+    mutex.lock();
+    /* Stop playing */
+    if( iplayer && (*iplayer) )
+    {
+        (*iplayer)->SetPlayState(iplayer, SL_PLAYSTATE_STOPPED);
+    }
+    /* Clear Buffer Queue */
+    if( pcmQue && (*pcmQue) )
+    {
+        (*pcmQue)->Clear(pcmQue);
+    }
+    /* Close Player Object */
+    if( player && (*player) )
+    {
+        (*player)->Destroy(player);
+    }
+    /* Close Ouput Mixer Object */
+    if( mix && (*mix) )
+    {
+        (*mix)->Destroy(mix);
+    }
+    /* Close Engine Object */
+    if( engineSL && (*engineSL) )
+    {
+        (*engineSL)->Destroy(engineSL);
+    }
+    mutex.unlock();
+}
+
 bool SLAudioPlay::StartPlay(XParameter out)
-{
+{      
+    Close();
+
+    mutex.lock();
     /* Create Engine */
     eng = CreateSL();
     if( eng )
@@ -76,7 +113,8 @@ bool SLAudioPlay::StartPlay(XParameter out)
         XLOGI("CreateSL success！ ");
     }
     else
-    {
+    {   
+        mutex.unlock();
         XLOGE("CreateSL failed！ ");
         return false;
     }
@@ -85,13 +123,15 @@ bool SLAudioPlay::StartPlay(XParameter out)
     SLresult re = 0;
     re = (*eng)->CreateOutputMix(eng,&mix,0,0,0);
     if( re !=SL_RESULT_SUCCESS )
-    {
+    {   
+        mutex.unlock();
         XLOGE("SL_RESULT_SUCCESS failed!");
         return false;
     }
     re = (*mix)->Realize(mix,SL_BOOLEAN_FALSE);
     if( re !=SL_RESULT_SUCCESS )
-    {
+    {   
+        mutex.unlock();
         XLOGE("(*mix)->Realize failed!");
         return false;
     }
@@ -118,7 +158,8 @@ bool SLAudioPlay::StartPlay(XParameter out)
     const SLboolean req[] = {SL_BOOLEAN_TRUE};
     re = (*eng)->CreateAudioPlayer(eng,&player,&ds,&audioSink,sizeof(ids)/sizeof(SLInterfaceID),ids,req);
     if(re !=SL_RESULT_SUCCESS )
-    {
+    {   
+        mutex.unlock();
         XLOGE("CreateAudioPlayer Failed!");
         return false;
     } else{
@@ -129,13 +170,15 @@ bool SLAudioPlay::StartPlay(XParameter out)
     /* Get player interface */
     re = (*player)->GetInterface(player,SL_IID_PLAY,&iplayer);
     if(re !=SL_RESULT_SUCCESS )
-    {
+    {   
+        mutex.unlock();
         XLOGE("GetInterface SL_IID_PLAY Failed!");
         return false;
     }
     re = (*player)->GetInterface(player,SL_IID_BUFFERQUEUE,&pcmQue);
     if(re !=SL_RESULT_SUCCESS )
-    {
+    {   
+        mutex.unlock();
         XLOGE("GetInterface SL_IID_BUFFERQUEUE Failed!");
         return false;
     }
@@ -148,6 +191,7 @@ bool SLAudioPlay::StartPlay(XParameter out)
 
     /* Enable it */
     (*pcmQue)->Enqueue(pcmQue,"",1);
+    mutex.unlock();
     XLOGI("SLAudioPlay::StartPlay Succeeded.");
     return true;
 }

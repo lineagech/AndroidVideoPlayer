@@ -7,6 +7,19 @@ extern "C" {
 }
 #include "FFDecode.h"
 #include "XLog.h"
+    
+void FFDecode::Close()
+{
+    mutex.lock();
+    curr_pts = 0;
+    if( frame )
+        av_frame_free(&frame);
+    if( codec ){
+        avcodec_close(codec);
+        avcodec_free_context(&codec);
+    }
+    mutex.unlock();
+}
 
 bool FFDecode::Open( XParameter para )
 {
@@ -21,6 +34,7 @@ bool FFDecode::Open( XParameter para )
     }
     XLOGI("avcodec_find_decoder Succeeded!");
 
+    mutex.lock();
     codec_context = avcodec_alloc_context3( codec );
     avcodec_parameters_to_context( codec_context, p_avcodec_para );
 
@@ -29,7 +43,8 @@ bool FFDecode::Open( XParameter para )
 
     int re = avcodec_open2( codec_context, 0, 0 );
     if( re != 0 )
-    {
+    {   
+        mutex.unlock();
         char buf[1024] = {0};
         av_strerror( re, buf, sizeof(buf) );
         XLOGE("%s", buf);
@@ -41,6 +56,7 @@ bool FFDecode::Open( XParameter para )
     else
         this->isAudio = true;
 
+    mutex.unlock();
     XLOGI("avcodec_open2 Succeeded!");
 
     return true;
@@ -49,24 +65,35 @@ bool FFDecode::Open( XParameter para )
 bool FFDecode::SendPacket( XData packet )
 {
     if( packet.size <= 0 || !packet.data ) return false;
-    if( !codec_context ) return false;
+    mutex.lock();
+    if( !codec_context ) {
+        mutex.unlock();
+        return false;
+    }
     int re;
-
     re = avcodec_send_packet( codec_context, (AVPacket*)packet.data );
+    mutex.unlock();
     if( re != 0) return false;
 
     return true;
 }
 
 XData FFDecode::RecvFrame()
-{
-    if( !codec_context ) return XData();
+{   
+    mutex.lock();
+    if( !codec_context ) {
+        mutex.unlock();
+        return XData();
+    }
     if( !frame ) frame = av_frame_alloc();
     XData data;
     int re;
 
     re = avcodec_receive_frame( codec_context, frame );
-    if( re != 0 ) return XData(); // Decoding failed.
+    if( re != 0 ) {
+        mutex.unlock();
+        return XData(); // Decoding failed.
+    }
     data.data = (unsigned char*) frame;
 
     if( codec_context->codec_type == AVMEDIA_TYPE_VIDEO ) {
@@ -80,5 +107,7 @@ XData FFDecode::RecvFrame()
     }
     memcpy(data.datas, frame->data, sizeof(data.datas));
     data.pts = frame->pts;
+    curr_pts = data.pts
+    mutex.unlock();
     return data;
 }

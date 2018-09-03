@@ -7,6 +7,7 @@
 
 
 #include "IDemux.h"
+#include <mutex>
 
 struct AVFormatContext;
 
@@ -15,6 +16,7 @@ public:
     FFDemux();
     /* Open the files or streaming: rmtp, http, rstp */
     virtual bool Open(const char* url);
+    virtual void Close();
 
     virtual XParameter GetVPara();
     virtual XParameter GetAPara();
@@ -24,8 +26,10 @@ public:
 
 private:
     AVFormatContext* ic = NULL;
+    std::mutex mutex;
     int audioStream = 1;
     int videoStream = 0;
+
 };
 
 
