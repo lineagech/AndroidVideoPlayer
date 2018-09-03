@@ -15,7 +15,7 @@ void XSleep(int ms)
 }
 
 // Start thread
-void XThread::Start()
+bool XThread::Start()
 {
     isExit = false;
     thread thread_(&XThread::ThreadMain, this);

@@ -12,6 +12,7 @@
 #include "FFResample.h"
 #include "IAudioPlay.h"
 #include "SLAudioPlay.h"
+#include "IPlayer.h"
 
 class TestObs: public IObserver{
 public:
@@ -26,39 +27,47 @@ extern "C" jint JNI_OnLoad(JavaVM* vm, void* res)
 {
     FFDecode::InitHard(vm);
 
-    TestObs* tobs = new TestObs();
+    //TestObs* tobs = new TestObs();
     IDemux* de = new FFDemux;
     //de->AddObs(tobs);
-    de->Open("/sdcard/1080.mp4");
+    //de->Open("/sdcard/1080.mp4");
 
     IDecode* vdecode = new FFDecode();
-    vdecode->Open(de->GetVPara());
+    //vdecode->Open(de->GetVPara());
 
     IDecode* adecode = new FFDecode();
-    adecode->Open(de->GetAPara());
+    //adecode->Open(de->GetAPara());
 
     // Send every date to vdecode and adecode
     de->AddObs(vdecode);
     de->AddObs(adecode);
 
     iview = new GLVideoView();
-    vdecode->AddObs(iview);
+    //vdecode->AddObs(iview);
 
     IResample* resample = new FFResample();
-    XParameter outPara = de->GetAPara();
-    resample->Open(outPara);
+    //XParameter outPara = de->GetAPara();
+    //resample->Open(outPara);
     adecode->AddObs(resample);
 
     IAudioPlay* audioPlay = new SLAudioPlay();
-    audioPlay->StartPlay(outPara);
+    //audioPlay->StartPlay(outPara);
     resample->AddObs(audioPlay);
 
+
+    IPlayer::Get()->demux = de;
+    IPlayer::Get()->adecode = adecode;
+    IPlayer::Get()->vdecode = vdecode;
+    IPlayer::Get()->videoView = view;
+    IPlayer::Get()->resample = resample;
+    IPlayer::Get()->audioPlay = audioPlay;
+    IPlayer::Get()->Open("/sdcard/1080.mp4");
+
+
+
     de->Start();
-    XLOGI("Demux Start!");
     vdecode->Start();
-    XLOGI("Video Decoding Start!");
     adecode->Start();
-    XLOGI("Audio Decoding Start!");
     ///XSleep(3000);
     //de->Stop();
 

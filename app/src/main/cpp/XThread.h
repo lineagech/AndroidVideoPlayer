@@ -10,7 +10,7 @@ void XSleep(int ms);
 class XThread {
 public:
     // Start thread
-    virtual void Start();
+    virtual bool Start();
     // Safe stop
     virtual void Stop();
 
