@@ -79,5 +79,6 @@ XData FFDecode::RecvFrame()
                     (frame->nb_samples/* per chanel */) * 2 /* channel num*/ ;
     }
     memcpy(data.datas, frame->data, sizeof(data.datas));
+    data.pts = frame->pts;
     return data;
 }
