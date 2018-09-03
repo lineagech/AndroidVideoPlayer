@@ -72,6 +72,7 @@ void SLAudioPlay::PlayCall(void *bufq)
 
 void SLAudioPlay::Close()
 {   
+    IAudioPlay::Clear();
     mutex.lock();
     /* Stop playing */
     if( iplayer && (*iplayer) )

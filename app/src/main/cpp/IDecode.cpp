@@ -5,6 +5,19 @@
 #include "IDecode.h"
 #include "XLog.h"
 
+void IDecode::Clear()
+{
+    packet_list_mutex.lock();
+    while( !packet_list.empty() )
+    {
+        packet_list.front().Drop();
+        packet_list.pop_front();
+    }
+    sync_pts = 0;
+    curr_pts = 0;
+    packet_list_mutex.unlock();
+}
+
 void IDecode::Update( XData packet )
 {
     if( packet.isAudio != isAudio ) return;

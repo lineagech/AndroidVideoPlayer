@@ -9,7 +9,8 @@ extern "C" {
 #include "XLog.h"
     
 void FFDecode::Close()
-{
+{   
+    IDecode::Clear();
     mutex.lock();
     curr_pts = 0;
     if( frame )

@@ -14,10 +14,12 @@ class IAudioPlay : public IObserver {
 public:
     /* blocking mode, will being blocked when frames size is equal to max_frames */
     virtual void Update(XData data);
+
     /* get queued data, will block if no data exists */
     virtual XData GetData();
     virtual bool StartPlay(XParameter out) = 0;
     virtual void Close() = 0;
+    virtual void Clear();
     int max_frames = 100;
     int pts = 0;
 protected:

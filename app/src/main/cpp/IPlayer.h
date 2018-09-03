@@ -17,6 +17,7 @@ public:
 	static IPlayer* Get( unsigned char index=0 );
 	virtual static void InitHard(void* vm);
 	virtual bool Open( const char* patch );
+	virtual bool Close();
 	virtual bool Start();
 	virtual void InitView( void* win );
 	bool isHardDecode = false;

@@ -9,6 +9,13 @@ void IPlayerProxy::Init( void* vm )
 	mutex.unlock();
 }
 
+void IPlayerProxy::Close()
+{
+	mutex.lock();
+	if( player ) player->Close();
+	mutex.unlock();
+}
+
 bool IPlayerProxy::Open( const char* path )
 {	
 	bool re = false;

@@ -19,6 +19,7 @@ public:
     /* open decoder */
     virtual bool Open( XParameter para, bool isHard=false ) = 0;
     virtual void Close() = 0;
+    virtual void Clear();
 
     /* Future Model, send packet to a thread and return immediately */
     virtual bool SendPacket( XData packet ) = 0;
