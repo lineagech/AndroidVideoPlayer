@@ -33,8 +33,8 @@ bool IPlayer::Open( const char* patch )
 		/* If data is raw, do not need to decode */
 		//return false;
 	}
-
-	XParameter outPara = demux->GetAPara();
+	if( outPara.sample_rate <= 0 )
+		outPara = demux->GetAPara();
 	if( !resample || resample->Open( demux->GetAPara() ,outPara) )
 	{
 		XLOGE("resample->Open %s Failed.", path);
@@ -45,18 +45,31 @@ bool IPlayer::Open( const char* patch )
 
 bool IPlayer::Start( )
 {	
+	if( !demux || !demux->Start() )
+	{
+		XLOGE("demux->Start Failed.");
+		return false;
+	}
 
+	if( adecode ) adecode->Start();
 
+	if( audioPlay ) audioPlay->StartPlay(outPara);
 
-
-
-
+	if( vdecode ) vdecode->Start();
 
 	return true;
 }
 
+void IPlayer::InitView( void* win )
+{
+	if( videoView ) 
+		videoView->SetRender(win);
+}
 
-
+virtual void IPlayer::InitHard(void* vm)
+{
+	
+}
 
 
 

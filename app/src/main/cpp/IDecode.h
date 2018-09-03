@@ -14,6 +14,8 @@
 class IDecode : public IObserver
 {
 public:
+    virtual static void InitHard(void* vm) = 0;
+
     /* open decoder */
     virtual bool Open( XParameter para, bool isHard=false ) = 0;
 

@@ -14,6 +14,9 @@
 #include "SLAudioPlay.h"
 #include "IPlayer.h"
 
+#include "FFPlayerBuilder.h"
+#include "IPlayerProxy.h"
+
 class TestObs: public IObserver{
 public:
     void Update(XData d)
@@ -23,51 +26,17 @@ public:
 };
 
 IVideoView* iview = NULL;
+static IPlayer* player = NULL;
+
 extern "C" jint JNI_OnLoad(JavaVM* vm, void* res)
 {
-    FFDecode::InitHard(vm);
-
-    //TestObs* tobs = new TestObs();
-    IDemux* de = new FFDemux;
-    //de->AddObs(tobs);
-    //de->Open("/sdcard/1080.mp4");
-
-    IDecode* vdecode = new FFDecode();
-    //vdecode->Open(de->GetVPara());
-
-    IDecode* adecode = new FFDecode();
-    //adecode->Open(de->GetAPara());
-
-    // Send every date to vdecode and adecode
-    de->AddObs(vdecode);
-    de->AddObs(adecode);
-
-    iview = new GLVideoView();
-    //vdecode->AddObs(iview);
-
-    IResample* resample = new FFResample();
-    //XParameter outPara = de->GetAPara();
-    //resample->Open(outPara);
-    adecode->AddObs(resample);
-
-    IAudioPlay* audioPlay = new SLAudioPlay();
-    //audioPlay->StartPlay(outPara);
-    resample->AddObs(audioPlay);
-
-
-    IPlayer::Get()->demux = de;
-    IPlayer::Get()->adecode = adecode;
-    IPlayer::Get()->vdecode = vdecode;
-    IPlayer::Get()->videoView = view;
-    IPlayer::Get()->resample = resample;
-    IPlayer::Get()->audioPlay = audioPlay;
-    IPlayer::Get()->Open("/sdcard/1080.mp4");
-
-
-
-    de->Start();
-    vdecode->Start();
-    adecode->Start();
+    //FFDecode::InitHard(vm);
+    IPlayerProxy::Get()->Init(vm);
+    IPlayerProxy::Get()->Open("/sdcard/1080.mp4");
+    IPlayerProxy::Get()->Start();
+    //de->Start();
+    //vdecode->Start();
+    //adecode->Start();
     ///XSleep(3000);
     //de->Stop();
 
@@ -82,8 +51,7 @@ Java_xplay_xplay_MainActivity_stringFromJNI(
         jobject /* this */) {
     std::string hello = "Hello from C++";
 
-    // for test //////////////////
-
+    // for test /////////////////
     
 
     ///////////////////////////////
@@ -95,7 +63,8 @@ JNIEXPORT void JNICALL
 Java_xplay_xplay_XPlay_InitView(JNIEnv *env, jobject instance, jobject surface) {
 
     ANativeWindow* window = ANativeWindow_fromSurface( env, surface );
-    iview->SetRender( window );
+    IPlayerProxy::Get()->InitView(win);
+    //iview->SetRender( window );
     //XEGL::Get()->Init( window );
     //XShader shader;
     //shader.Init();
