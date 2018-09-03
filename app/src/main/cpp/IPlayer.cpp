@@ -16,8 +16,10 @@ IPlayer* IPlayer::Get( unsigned char index=0 )
 
 bool IPlayer::Open( const char* patch )
 {	
+	mutex.lock();
 	if( !demux || !demux->Open(path) ) 
-	{
+	{	
+		mutex.unlock();
 		XLOGE("demux->Open %s Failed.", path);
 		return false;
 	}
@@ -39,14 +41,16 @@ bool IPlayer::Open( const char* patch )
 	{
 		XLOGE("resample->Open %s Failed.", path);
 	}
-
+	mutex.unlock();
 	return true;
 }
 
-bool IPlayer::Start( )
+bool IPlayer::Start()
 {	
+	mutex.lock();
 	if( !demux || !demux->Start() )
-	{
+	{	
+		mutex.unlock();
 		XLOGE("demux->Start Failed.");
 		return false;
 	}
@@ -57,6 +61,9 @@ bool IPlayer::Start( )
 
 	if( vdecode ) vdecode->Start();
 
+	XThread::Start();
+
+	mutex.unlock();
 	return true;
 }
 
@@ -64,6 +71,30 @@ void IPlayer::InitView( void* win )
 {
 	if( videoView ) 
 		videoView->SetRender(win);
+}
+
+void IPlayer::Main()
+{
+	while( !isExit )
+	{
+		mutex.lock();
+
+		if( !audioPlay || !vdecode )
+		{
+			mutex.unlock();
+			XSleep(2);
+			continue;
+		}
+
+		/* Synchronization */
+		int audio_pts = audioPlay->pts;
+		XLOGE("audio pts = %d", audio_pts);
+
+		vdecode->sync_pts = audio_pts;
+
+		mutex.unlock();
+		XSleep(2);
+	}
 }
 
 virtual void IPlayer::InitHard(void* vm)

@@ -8,6 +8,12 @@ extern "C" {
 #include <libavformat/avformat.h>
 }
 
+// Transfrom to double from rational number
+static double r2d( AVRational r)
+{
+    return r.num==0 || r.den == 0 ? (double)r.num/(double)r.den;
+}
+
 /* Open the files or streaming: rmtp, http, rstp */
 bool FFDemux::Open(const char* url)
 {
@@ -116,6 +122,12 @@ XData FFDemux::Read()
         av_packet_free(&packet);
         return XData();
     }
+
+    // seconds
+    packet->pts = packet->pts * r2d(ic->streams[packet->stream_index]->time_base);
+    packet->dts = packet->dts * r2d(ic->streams[packet->stream_index]->time_base);
+    d.pts = (int)packet->pts;
+    XLOGE("Demux pts %d", d.pts);
 
     return d;
 }

@@ -4,32 +4,22 @@
 
 extern "C" {
 #include <libavcodec/avcodec.h>
-#include <libavcodec/jni.h>
 }
 #include "FFDecode.h"
 #include "XLog.h"
 
-void FFDecode::InitHard(void* vm)
-{
-    av_jni_set_java_vm(vm,0);
-}
-
-bool FFDecode::Open( XParameter para, bool isHard)
+bool FFDecode::Open( XParameter para )
 {
     if( !para.para ) return false;
     AVCodecParameters* p_avcodec_para = para.para;
 
     AVCodec* codec = avcodec_find_decoder( p_avcodec_para->codec_id );
-    if( isHard )
-    {
-        codec = avcodec_find_decoder_by_name("h264_mediacodec"); 
-    }
     if( !codec )
     {
-        XLOGE("avcodec_find_decoder Failed, codec id %d, Hard %d", codec->id, isHard);
+        XLOGE("avcodec_find_decoder Failed, codec id %d", codec->id);
         return false;
     }
-    XLOGI("avcodec_find_decoder Succeeded! Hard %d", isHard);
+    XLOGI("avcodec_find_decoder Succeeded!");
 
     codec_context = avcodec_alloc_context3( codec );
     avcodec_parameters_to_context( codec_context, p_avcodec_para );
@@ -88,8 +78,7 @@ XData FFDecode::RecvFrame()
         data.size = av_get_bytes_per_sample((AVSampleFormat) frame->format/*AVSampleFormat*/ ) *
                     (frame->nb_samples/* per chanel */) * 2 /* channel num*/ ;
     }
-
-    data.format = frame->format;
     memcpy(data.datas, frame->data, sizeof(data.datas));
+    data.pts = frame->pts;
     return data;
 }

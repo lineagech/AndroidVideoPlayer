@@ -14,10 +14,7 @@ struct AVFrame;
 
 class FFDecode: public IDecode {
 public:
-
-	static void InitHard(void* vm);
-
-    virtual bool Open( XParameter para, bool isHard=false );
+    virtual bool Open( XParameter para );
 
     /* Future Model, send packet to a thread and return immediately */
     virtual bool SendPacket( XData packet );

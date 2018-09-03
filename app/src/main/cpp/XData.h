@@ -13,6 +13,7 @@ enum XDataType{
 class XData {
 public:
     int type = 0;
+    int pts = 0;
     unsigned char* data = 0;
     unsigned char* datas[8] = {0};
     int width = 0;

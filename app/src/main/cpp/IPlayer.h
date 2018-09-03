@@ -2,6 +2,8 @@
 #ifndef XPLAY_IPLAYER_H
 #define XPLAY_IPLAYER_H
 
+#include <mutex>
+
 class IDemux; /* declare first so that do not need to include header file */
 class IDecode;
 class IResample;
@@ -29,6 +31,9 @@ public:
 	XParameter outPara; // Audio output parameters configuration
 
 protected:
+	/* For the purpose of synchronizing */
+	void Main();
+	std::mutex mutex;
 	IPlayer(){};
 };
 

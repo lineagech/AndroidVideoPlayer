@@ -34,7 +34,7 @@ bool FFResample::Open(XParameter in, XParameter out )
 
 }
 
-XData FFResample::Resample( XData indata)
+XData FFResample::Resample( XData indata ) 
 {
     if( indata.size <= 0 || !indata.data ) return XData();
     if( !actx ) return XData();
@@ -62,6 +62,8 @@ XData FFResample::Resample( XData indata)
         return XData();
     }
     XLOGE("swr_convert Succeeded, %d", len);
+
+    out.pts = indata.pts;
 
     return out;
 }

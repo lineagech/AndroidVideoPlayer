@@ -18,6 +18,7 @@ public:
     virtual XData GetData();
     virtual bool StartPlay(XParameter out) = 0;
     int max_frames = 100;
+    int pts = 0;
 protected:
     std::list<XData> frames;
     std::mutex frames_mutex;

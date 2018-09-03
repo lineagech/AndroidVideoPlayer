@@ -32,6 +32,17 @@ void IDecode::Main()
     {
         packet_list_mutex.lock();
 
+        /* See if Video/Audio are synchronized */
+        if( !isAudio && sync_pts > 0 )
+        {
+            if( sync_pts < curr_pts ) 
+            {
+                packet_list_mutex.unlock();
+                XSleep(1);
+                continue;
+            }
+        }
+
         if( packet_list.empty() )
         {
             packet_list_mutex.unlock();
@@ -44,9 +55,12 @@ void IDecode::Main()
         if( this->SendPacket( recv_packet ) )
         {
             /* One packet sent can result in multiple decoded frames, using while to handle that */
-            while( !isExit ) {
+            while( !isExit ) 
+            {
                 XData decoded_frame = RecvFrame();
                 if( !decoded_frame.data ) break;
+
+                curr_pts = frame->pts;
                 //XLOGI("Recv Frame Size %d", decoded_frame.size);
                 /* Notify next observer when decoded frame data is ready */
                 this->Notify( decoded_frame );

@@ -31,6 +31,10 @@ public:
     bool isAudio = false;
     int max_packet_list_size = 100; //around 4 sec duration buffer
 
+    /* Synchronization Time, if reopening the file, need to clear */
+    int sync_pts = 0;
+    int curr_pts = 0;
+
 protected:
     virtual void Main();
     std::list<XData> packet_list;
