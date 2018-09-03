@@ -12,6 +12,17 @@ void GLVideoView::SetRender(void* win)
     XLOGE("Set Render!");
 }
 
+void GLVideoViewPP::Close()
+{
+    mutex.lock();
+    if( text )
+    {
+        text->Drop();
+        text = 0;
+    }
+    mutex.unlock();
+}
+
 void GLVideoView::Render(XData data)
 {
     if( !view ) return;

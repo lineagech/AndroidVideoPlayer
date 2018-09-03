@@ -8,6 +8,7 @@
 
 #include "XParameter.h"
 #include "IDecode.h"
+#include <mutex>
 
 struct AVCodecContext;
 struct AVFrame;
@@ -15,6 +16,7 @@ struct AVFrame;
 class FFDecode: public IDecode {
 public:
     virtual bool Open( XParameter para );
+    virtual void Close();
 
     /* Future Model, send packet to a thread and return immediately */
     virtual bool SendPacket( XData packet );
@@ -25,6 +27,7 @@ public:
 protected:
     AVCodecContext* codec_context = 0;
     AVFrame* frame = 0;
+    std::mutex mutex;
 };
 
 

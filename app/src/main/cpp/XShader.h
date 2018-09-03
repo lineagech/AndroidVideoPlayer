@@ -5,6 +5,8 @@
 #ifndef XPLAY_XSHADER_H
 #define XPLAY_XSHADER_H
 
+#include <mutex>
+
 /* Re-define enum to make independent */
 enum XSHADER_TYPE
 {
@@ -16,6 +18,7 @@ enum XSHADER_TYPE
 class XShader {
 public:
     virtual bool Init( XSHADER_TYPE type = XSHADER_YUV420P );
+    virtual void Close();
     /* obtain texture and map to memory */
     virtual void GetTexture( unsigned int index, int width, int height, unsigned char* buf, bool is_alpha=false );
     virtual void Draw();
@@ -25,6 +28,7 @@ protected:
     unsigned int fsh = 0;
     unsigned int program = 0;
     unsigned int texts[100] = {0};
+    std::mutex mutex;
 };
 
 

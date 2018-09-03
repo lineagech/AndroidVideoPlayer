@@ -57,11 +57,42 @@ static GLuint InitShader(const char* code, GLint type)
     return sh;
 }
 
+void XShader::Close()
+{   
+    mutex.lock();
+    // Release Shader
+    if( program )
+    {
+        glDeleteProgram(program);
+    }
+    if( vsh )
+    {
+        glDeleteShader(vsh);
+    }
+    if( fsh )
+    {
+        glDeleteShader(fsh);
+    }
+
+    // Release Texture
+    for( int i=0; i<sizeof(texts)/sizeof(unsigned int); i++ )
+    {
+        if( texts[i] )
+        {
+            glDeleteTextures(1, &texts[i]);
+        }
+        texts[i] = 0;
+    }
+    mutex.unlock();
+}
 
 bool XShader::Init( XSHADER_TYPE type )
-{
+{   
+    Close();
+    mutex.lock();
     vsh = InitShader( vertexShader, GL_VERTEX_SHADER );
     if( vsh == 0 ) {
+        mutex.unlock();
         XLOGE("InitShader vertexShader Failed.");
         return false;
     }
@@ -69,6 +100,7 @@ bool XShader::Init( XSHADER_TYPE type )
 
     fsh = InitShader( fragYUV420P, GL_FRAGMENT_SHADER );
     if( fsh == 0 ) {
+        mutex.unlock();
         XLOGE("InitShader fragYUV420P Failed.");
         return false;
     }
@@ -77,7 +109,8 @@ bool XShader::Init( XSHADER_TYPE type )
     /* Attach Shader */
     program = glCreateProgram();
     if(program == 0)
-    {
+    {   
+        mutex.unlock();
         XLOGE("glCreateProgram Failed.");
         return false;
     }
@@ -90,8 +123,9 @@ bool XShader::Init( XSHADER_TYPE type )
     /* Check link status */
     GLint isLinked = 0;
     glGetProgramiv(program, GL_LINK_STATUS, &isLinked);
-    if( isLinked == GL_FALSE  )
-    {
+    if( isLinked == GL_FALSE  ) 
+    {   
+        mutex.unlock();
         XLOGE("glGetProgramiv failed");
         GLint maxLen = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLen);
@@ -139,15 +173,21 @@ bool XShader::Init( XSHADER_TYPE type )
     glUniform1i(glGetUniformLocation(program, "uTexture"), 1);
     glUniform1i(glGetUniformLocation(program, "vTexture"), 2);
 
+    mutex.unlock();
     XLOGI("XShader Init Succeeded!");
 
+    return true;
 }
 
 void XShader::Draw()
-{
-    if( !program ) return;
-
+{   
+    mutex.lock();
+    if( !program ) {
+        mutex.unlock();
+        return;
+    }
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    mutex.unlock();
 }
 
 void XShader::GetTexture(unsigned int index, int width, int height, unsigned char *buf, bool is_alpha)
@@ -155,6 +195,7 @@ void XShader::GetTexture(unsigned int index, int width, int height, unsigned cha
     /* Write to buffer */
     unsigned int format = GL_LUMINANCE;
     //if( isa ) format = GL_LUMINANCE_ALPHA;
+    mutex.lock();
     if( texts[index] == 0 ) {
         glGenTextures(1, &texts[index]);
 
@@ -174,4 +215,8 @@ void XShader::GetTexture(unsigned int index, int width, int height, unsigned cha
     /* Substitute content */
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, buf);
 
+
+    mutex.unlock();
 }
+
+
