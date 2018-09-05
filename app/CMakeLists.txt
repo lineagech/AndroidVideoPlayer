@@ -6,10 +6,8 @@
 cmake_minimum_required(VERSION 3.4.1)
 
 
-#添加头文件路径（相对于本文件路径）
 include_directories(include)
 
-#设置ffmpeg库所在路径的变量
 set(FF ${CMAKE_CURRENT_SOURCE_DIR}/libs/${ANDROID_ABI})
 add_library(avcodec SHARED IMPORTED)
 set_target_properties(avcodec PROPERTIES IMPORTED_LOCATION ${FF}/libavcodec.so)
@@ -58,7 +56,10 @@ add_library( # Sets the name of the library.
               src/main/cpp/IResample.cpp
               src/main/cpp/SLAudioPlay.cpp
               src/main/cpp/IAudioPlay.cpp
-
+              src/main/cpp/IPlayer.cpp
+              src/main/cpp/FFPlayerBuilder.cpp
+              src/main/cpp/IPlayerBuilder.cpp
+              src/main/cpp/IPlayerProxy.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a

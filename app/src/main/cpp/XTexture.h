@@ -10,7 +10,7 @@ enum XTEXTURE_TYPE
 	XTEXTURE_YUV420P = 0, // Y:4, U:1, V:1
 	XTEXTURE_NV12 = 25,   // Y:4, UV:1
 	XTEXTURE_NV21 = 26    // Y:4, VU:1
-}
+};
 
 class XTexture {
 public:

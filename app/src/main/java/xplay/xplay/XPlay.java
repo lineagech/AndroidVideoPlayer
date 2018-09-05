@@ -5,6 +5,9 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
 /* Inherit Window Interface */
 public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback, GLSurfaceView.Renderer {
     public XPlay(Context context, AttributeSet attrs) {
@@ -32,4 +35,19 @@ public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback, GLSu
     }
 
     public native void InitView( Object surface );
+
+    @Override
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+
+    }
+
+    @Override
+    public void onDrawFrame(GL10 gl) {
+
+    }
 }

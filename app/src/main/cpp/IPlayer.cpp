@@ -7,11 +7,13 @@
 #include "IDecode.h"
 #include "IAudioPlay.h"
 #include "IVideoView.h"
+#include "IResample.h"
+#include "XLog.h"
 
-IPlayer* IPlayer::Get( unsigned char index=0 )
+IPlayer* IPlayer::Get( unsigned char index )
 {
 	static IPlayer player[256];
-	return player[index];
+	return &player[index];
 }
 
 void IPlayer::Close()
@@ -49,7 +51,7 @@ void IPlayer::Close()
 		demux->Close();
 }
 
-bool IPlayer::Open( const char* patch )
+bool IPlayer::Open( const char* path )
 {	
 	Close();
 	mutex.lock();
@@ -71,9 +73,9 @@ bool IPlayer::Open( const char* patch )
 		/* If data is raw, do not need to decode */
 		//return false;
 	}
-	if( outPara.sample_rate <= 0 )
-		outPara = demux->GetAPara();
-	if( !resample || resample->Open( demux->GetAPara() ,outPara) )
+
+    outPara = demux->GetAPara();
+	if( !resample || !resample->Open(demux->GetAPara(),outPara) )
 	{
 		XLOGE("resample->Open %s Failed.", path);
 	}
@@ -106,8 +108,12 @@ bool IPlayer::Start()
 
 void IPlayer::InitView( void* win )
 {
-	if( videoView ) 
+	if( videoView )
+    {
+		videoView->Close();
 		videoView->SetRender(win);
+	}
+
 }
 
 void IPlayer::Main()
@@ -132,11 +138,6 @@ void IPlayer::Main()
 		mutex.unlock();
 		XSleep(2);
 	}
-}
-
-virtual void IPlayer::InitHard(void* vm)
-{
-	
 }
 
 

@@ -4,10 +4,16 @@
 
 extern "C" {
 #include <libavcodec/avcodec.h>
+#include <libavcodec/jni.h>
 }
 #include "FFDecode.h"
 #include "XLog.h"
-    
+
+void FFDecode::InitHard(void *vm)
+{
+    av_jni_set_java_vm(vm, 0);
+}
+
 void FFDecode::Close()
 {   
     IDecode::Clear();
@@ -15,19 +21,25 @@ void FFDecode::Close()
     curr_pts = 0;
     if( frame )
         av_frame_free(&frame);
-    if( codec ){
-        avcodec_close(codec);
-        avcodec_free_context(&codec);
+
+    if( codec_context )
+    {
+        avcodec_close(codec_context);
+        avcodec_free_context(&codec_context);
     }
     mutex.unlock();
 }
 
-bool FFDecode::Open( XParameter para )
+bool FFDecode::Open( XParameter para, bool isHard )
 {
     if( !para.para ) return false;
     AVCodecParameters* p_avcodec_para = para.para;
 
     AVCodec* codec = avcodec_find_decoder( p_avcodec_para->codec_id );
+    if(isHard)
+    {
+        codec = avcodec_find_decoder_by_name("h264_mediacodec");
+    }
     if( !codec )
     {
         XLOGE("avcodec_find_decoder Failed, codec id %d", codec->id);
@@ -108,7 +120,7 @@ XData FFDecode::RecvFrame()
     }
     memcpy(data.datas, frame->data, sizeof(data.datas));
     data.pts = frame->pts;
-    curr_pts = data.pts
+    curr_pts = data.pts;
     mutex.unlock();
     return data;
 }

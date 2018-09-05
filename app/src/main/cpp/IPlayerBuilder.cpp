@@ -14,8 +14,8 @@ IPlayer* IPlayerBuilder::BuilderPlayer( unsigned char index )
     IDemux* de = CreateDemux();
 
     /* Video Decoding and Audio Decoding */
-    IDecode* vdecode = CreateDedecode();
-    IDecode* adecode = CreateDedecode();
+    IDecode* vdecode = CreateDecode();
+    IDecode* adecode = CreateDecode();
 
     // Send every date to vdecode and adecode
     de->AddObs(vdecode);

@@ -73,7 +73,7 @@ void IDecode::Main()
                 XData decoded_frame = RecvFrame();
                 if( !decoded_frame.data ) break;
 
-                curr_pts = frame->pts;
+                curr_pts = decoded_frame.pts;
                 //XLOGI("Recv Frame Size %d", decoded_frame.size);
                 /* Notify next observer when decoded frame data is ready */
                 this->Notify( decoded_frame );

@@ -33,11 +33,11 @@ extern "C" jint JNI_OnLoad(JavaVM* vm, void* res)
     //FFDecode::InitHard(vm);
     IPlayerProxy::Get()->Init(vm);
 
-    IPlayerProxy::Get()->Open("/sdcard/1080.mp4");
-    IPlayerProxy::Get()->Start();
+    // IPlayerProxy::Get()->Open("/sdcard/1080.mp4");
+    // IPlayerProxy::Get()->Start();
 
-    IPlayerProxy::Get()->Open("/sdcard/v1080.mp4");
-    IPlayerProxy::Get()->Start();
+    // IPlayerProxy::Get()->Open("/sdcard/v1080.mp4");
+    // IPlayerProxy::Get()->Start();
     //de->Start();
     //vdecode->Start();
     //adecode->Start();
@@ -67,10 +67,15 @@ JNIEXPORT void JNICALL
 Java_xplay_xplay_XPlay_InitView(JNIEnv *env, jobject instance, jobject surface) {
 
     ANativeWindow* window = ANativeWindow_fromSurface( env, surface );
-    IPlayerProxy::Get()->InitView(win);
-    //iview->SetRender( window );
-    //XEGL::Get()->Init( window );
-    //XShader shader;
-    //shader.Init();
+    IPlayerProxy::Get()->InitView(window);
 
+
+}extern "C"
+JNIEXPORT void JNICALL
+Java_xplay_xplay_OpenURL_Open(JNIEnv *env, jobject instance, jstring url_) {
+    const char *url = env->GetStringUTFChars(url_, 0);
+
+    // TODO
+
+    env->ReleaseStringUTFChars(url_, url);
 }

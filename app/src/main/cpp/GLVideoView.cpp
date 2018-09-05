@@ -12,7 +12,7 @@ void GLVideoView::SetRender(void* win)
     XLOGE("Set Render!");
 }
 
-void GLVideoViewPP::Close()
+void GLVideoView::Close()
 {
     mutex.lock();
     if( text )

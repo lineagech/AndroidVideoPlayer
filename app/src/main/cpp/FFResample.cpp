@@ -17,8 +17,8 @@ void FFResample::Close()
     mutex.unlock();
 }
 
-bool FFResample::Open(XParameter in, XParameter out )
-{   
+bool FFResample::Open( XParameter in, XParameter out )
+{
     Close();
     mutex.lock();
     actx = swr_alloc();
@@ -40,9 +40,9 @@ bool FFResample::Open(XParameter in, XParameter out )
 
     outChannels = in.para->channels;
     outFormat = AV_SAMPLE_FMT_S16;
+
     mutex.unlock();
     return true;
-
 }
 
 XData FFResample::Resample( XData indata ) 

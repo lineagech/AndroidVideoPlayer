@@ -1,4 +1,9 @@
 #include "FFPlayerBuilder.h"
+#include "FFDemux.h"
+#include "FFDecode.h"
+#include "FFResample.h"
+#include "GLVideoView.h"
+#include "SLAudioPlay.h"
 
 IDemux* FFPlayerBuilder::CreateDemux()
 {
@@ -7,22 +12,22 @@ IDemux* FFPlayerBuilder::CreateDemux()
 }
 IDecode* FFPlayerBuilder::CreateDecode()
 {
-	IDemux* ff_decode = new FFDecode();
+	IDecode* ff_decode = new FFDecode();
 	return ff_decode;
 }
 IResample* FFPlayerBuilder::CreateResample()
 {
-	IDemux* ff_resample = new FFResample();
+	IResample* ff_resample = new FFResample();
 	return ff_resample;
 }
 IVideoView* FFPlayerBuilder::CreateVideoView()
 {
-	IDemux* ff_videoview = new GLVideoView();
+	IVideoView* ff_videoview = new GLVideoView();
 	return ff_videoview;
 }
 IAudioPlay* FFPlayerBuilder::CreateAudioPlay()
 {
-	IDemux* ff_audioplayer = new SLAudioPlay();
+	IAudioPlay* ff_audioplayer = new SLAudioPlay();
 	return ff_audioplayer;
 }
 IPlayer* FFPlayerBuilder::CreatePlayer( unsigned char index )

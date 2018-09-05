@@ -1,6 +1,8 @@
 #ifndef XPLAY_FFPLAYERBUILDER_H
 #define XPLAY_FFPLAYERBUILDER_H
 
+#include "IPlayerBuilder.h"
+
 class FFPlayerBuilder : public IPlayerBuilder
 {
 public:
@@ -8,7 +10,7 @@ public:
 	static FFPlayerBuilder* Get()
 	{
 		static FFPlayerBuilder ff_player_builder;
-		return ff_player_builder;
+		return &ff_player_builder;
 	}
 
 protected:

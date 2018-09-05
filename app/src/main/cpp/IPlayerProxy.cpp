@@ -1,11 +1,13 @@
 #include "IPlayerProxy.h"
+#include "FFPlayerBuilder.h"
 
 
 void IPlayerProxy::Init( void* vm )
 {
 	mutex.lock();
 	if( vm ) FFPlayerBuilder::InitHard(vm);
-	if( !player ) player = FFPlayerBuilder::Get()->BuilderPlayer();
+    if(!player)
+        player = FFPlayerBuilder::Get()->BuilderPlayer();
 	mutex.unlock();
 }
 
@@ -37,13 +39,11 @@ bool IPlayerProxy::Start()
 }
 
 void IPlayerProxy::InitView( void* win )
-{	
-	bool re = false;
+{
 	mutex.lock();
-	if( player ) re = player->InitView(win);
+	if( player )
+        player->InitView( win );
 	mutex.unlock();
-
-	return re;
 }
 
 

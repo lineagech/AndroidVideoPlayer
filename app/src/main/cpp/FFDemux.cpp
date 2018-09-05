@@ -11,7 +11,7 @@ extern "C" {
 // Transfrom to double from rational number
 static double r2d( AVRational r)
 {
-    return r.num==0 || r.den == 0 ? (double)r.num/(double)r.den;
+    return ((r.num==0 || r.den == 0) ? 0 : (double)r.num/(double)r.den);
 }
 
 void FFDemux::Close()
