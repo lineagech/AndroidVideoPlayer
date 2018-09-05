@@ -68,14 +68,31 @@ Java_xplay_xplay_XPlay_InitView(JNIEnv *env, jobject instance, jobject surface) 
 
     ANativeWindow* window = ANativeWindow_fromSurface( env, surface );
     IPlayerProxy::Get()->InitView(window);
+}
 
-
-}extern "C"
+extern "C"
 JNIEXPORT void JNICALL
 Java_xplay_xplay_OpenURL_Open(JNIEnv *env, jobject instance, jstring url_) {
     const char *url = env->GetStringUTFChars(url_, 0);
 
-    // TODO
+    IPlayerProxy* player = IPlayerProxy::Get();
+    player->Open( url );
+
+    /* Start to play !*/
+    player->Start();
 
     env->ReleaseStringUTFChars(url_, url);
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_xplay_xplay_MainActivity_jni_1seek(JNIEnv *env, jobject instance, jdouble progress) {
+
+    IPlayerProxy* player = IPlayerProxy::Get();
+    player->seek_update_progress( progress );
+}extern "C"
+JNIEXPORT jdouble JNICALL
+Java_xplay_xplay_MainActivity_GetCurrProgress(JNIEnv *env, jobject instance) {
+
+    IPlayerProxy* player = IPlayerProxy::Get();
+    return player->curr_playing_position();
 }

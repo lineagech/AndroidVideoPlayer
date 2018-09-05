@@ -32,7 +32,7 @@ public:
     int max_packet_list_size = 100; //around 4 sec duration buffer
 
     /* Synchronization Time, if reopening the file, need to clear */
-    int sync_pts = 0;
+    int sync_pts = 0; // from audio decoding result, will compare to curr_ptsz
     int curr_pts = 0;
 
 protected:

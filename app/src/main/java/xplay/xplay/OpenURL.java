@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class OpenURL extends AppCompatActivity {
 
@@ -21,7 +22,21 @@ public class OpenURL extends AppCompatActivity {
         button_video.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                    EditText edit_text = findViewById(R.id.fileurl);
+                    String file_url = edit_text.getText().toString();
+                    Open( file_url );
+                    finish();
+                }
+            }
+        );
 
+        button_rtmp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    EditText edit_text = findViewById(R.id.rtmpurl);
+                    String rtmp_url = edit_text.getText().toString();
+                    Open( rtmp_url );
+                    finish();
                 }
             }
         );

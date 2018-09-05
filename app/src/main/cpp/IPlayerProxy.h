@@ -18,6 +18,9 @@ public:
 	virtual bool Start();
 	virtual void InitView( void* win );
 
+    virtual double curr_playing_position();
+	virtual void seek_update_progress( double progress );
+
 protected:
 	IPlayerProxy(){}; // Constructor
 	IPlayer* player = 0;

@@ -46,6 +46,22 @@ void IPlayerProxy::InitView( void* win )
 	mutex.unlock();
 }
 
+double IPlayerProxy::curr_playing_position()
+{
+    if( player )
+    {
+        return player->curr_playing_position();
+    }
+}
+
+void IPlayerProxy::seek_update_progress( double progress )
+{
+    if( player )
+    {
+        player->seek_update_progress( progress );
+    }
+}
+
 
 
 

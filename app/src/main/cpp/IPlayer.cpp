@@ -51,6 +51,8 @@ void IPlayer::Close()
 		demux->Close();
 }
 
+
+
 bool IPlayer::Open( const char* path )
 {	
 	Close();
@@ -86,12 +88,8 @@ bool IPlayer::Open( const char* path )
 bool IPlayer::Start()
 {	
 	mutex.lock();
-
-	if( audioPlay ) audioPlay->StartPlay(outPara);
 	
 	if( vdecode ) vdecode->Start();
-
-	if( adecode ) adecode->Start();
 
 	if( !demux || !demux->Start() )
 	{	
@@ -99,6 +97,10 @@ bool IPlayer::Start()
 		XLOGE("demux->Start Failed.");
 		return false;
 	}
+
+    if( adecode ) adecode->Start();
+
+    if( audioPlay ) audioPlay->StartPlay(outPara);
 
 	XThread::Start();
 
@@ -113,7 +115,70 @@ void IPlayer::InitView( void* win )
 		videoView->Close();
 		videoView->SetRender(win);
 	}
+}
 
+double IPlayer::curr_playing_position()
+{
+    mutex.lock();
+
+    double curr_pos = 0.0;
+    if( demux && vdecode )
+    {
+        curr_pos = (double)vdecode->curr_pts / (double)demux->totalMs;
+    }
+
+    mutex.unlock();
+    return curr_pos;
+}
+
+void IPlayer::seek_update_progress( double progress )
+{
+    mutex.lock();
+    /* clear queue's data */
+    if( vdecode ){
+        vdecode->Clear();
+    }
+    if( adecode ){
+        adecode->Clear();
+    }
+    if( audioPlay ){
+        audioPlay->Clear();
+    }
+
+    /* Transform to pts from progress */
+    double updated_ms = progress * demux->totalMs;
+
+    while( !isExit )
+    {
+        XData read_data = demux->Read();
+        if( read_data.size <= 0 ) break;
+
+        if( read_data.isAudio )
+        {
+            if( read_data.pts < updated_ms ) {
+                read_data.Drop();
+                continue;
+            }
+            demux->Notify( read_data );
+            continue;
+        }
+        else
+        {
+            int re = vdecode->SendPacket( read_data );
+            read_data.Drop();
+
+            XData decoded_video_data =  vdecode->RecvFrame();
+            if( decoded_video_data.size <= 0 ) continue;
+            if( decoded_video_data.pts >= updated_ms )
+            {
+                vdecode->Notify( decoded_video_data );
+                break;
+            }
+
+        }
+    }
+
+    mutex.unlock();
 }
 
 void IPlayer::Main()

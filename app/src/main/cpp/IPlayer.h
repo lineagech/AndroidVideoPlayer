@@ -21,6 +21,10 @@ public:
 	virtual void Close();
 	virtual bool Start();
 	virtual void InitView( void* win );
+
+    virtual double curr_playing_position();
+    virtual void seek_update_progress( double progress );
+
 	bool isHardDecode = false;
 
 	XParameter outPara; // Audio output parameters configuration
