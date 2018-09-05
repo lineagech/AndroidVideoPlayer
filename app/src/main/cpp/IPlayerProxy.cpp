@@ -46,6 +46,24 @@ void IPlayerProxy::InitView( void* win )
 	mutex.unlock();
 }
 
+void IPlayerProxy::Pause( bool pause_or_not )
+{
+    mutex.lock();
+    if( player )
+        player->Pause( pause_or_not );
+    mutex.unlock();
+}
+
+bool IPlayerProxy::isPause()
+{
+    bool result = false;
+    mutex.lock();
+    if( player )
+        result = player->isPause();
+    mutex.unlock();
+    return result;
+}
+
 double IPlayerProxy::curr_playing_position()
 {
     if( player )

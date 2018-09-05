@@ -18,6 +18,7 @@ void XSleep(int ms)
 bool XThread::Start()
 {
     isExit = false;
+    isPaused = false;
     thread thread_(&XThread::ThreadMain, this);
     thread_.detach();
 }
@@ -45,4 +46,24 @@ void XThread::Stop()
         XSleep(1);
     }
     XLOGI("Stopping Thread Overtime !!!");
+}
+
+#define SleepCount (10)
+
+void XThread::Pause( bool pause_or_not )
+{
+    isPaused = pause_or_not;
+
+    /* Each thread should query isPause() first before continuing running i*/
+    for( int count = 0; count < SleepCount; count++ )
+    {
+        if( isPaused == isPausing ) break;
+        XSleep( 10 );
+    }
+}
+
+bool XThread::isPause()
+{
+    isPausing = isPaused;
+    return isPaused;
 }

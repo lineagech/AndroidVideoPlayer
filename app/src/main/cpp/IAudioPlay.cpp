@@ -41,6 +41,11 @@ XData IAudioPlay::GetData()
 
     while( !isExit )
     {
+        if( isPause() )
+        {
+            XSleep(2);
+            continue;
+        }
         frames_mutex.lock();
         if( !frames.empty() )
         {

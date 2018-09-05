@@ -14,6 +14,9 @@ public:
     // Safe stop
     virtual void Stop();
 
+    virtual void Pause( bool pause_or_not );
+    virtual bool isPause();
+
     // Main entry function
     virtual void Main() {}
 
@@ -23,6 +26,8 @@ private:
 protected:
     bool isExit = false;
     bool isRunning = false;
+    bool isPaused = false;
+    bool isPausing = false;
 };
 
 

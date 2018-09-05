@@ -43,6 +43,12 @@ void IDecode::Main()
 {
     while( !isExit )
     {
+        if( isPause() )
+        {
+            XSleep(2);
+            continue;
+        }
+
         packet_list_mutex.lock();
 
         /* See if Video/Audio are synchronized */

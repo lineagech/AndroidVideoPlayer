@@ -117,6 +117,23 @@ void IPlayer::InitView( void* win )
 	}
 }
 
+void IPlayer::Pause( bool pause_or_not )
+{
+    mutex.lock();
+
+    XThread::Pause(pause_or_not);
+    if( demux )
+        demux->Pause( pause_or_not );
+    if( vdecode )
+        vdecode->Pause( pause_or_not );
+    if( adecode )
+        adecode->Pause( pause_or_not );
+    if( audioPlay )
+        audioPlay->Pause( pause_or_not );
+
+    mutex.unlock();
+}
+
 double IPlayer::curr_playing_position()
 {
     mutex.lock();

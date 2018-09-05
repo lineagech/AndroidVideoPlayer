@@ -95,4 +95,10 @@ Java_xplay_xplay_MainActivity_GetCurrProgress(JNIEnv *env, jobject instance) {
 
     IPlayerProxy* player = IPlayerProxy::Get();
     return player->curr_playing_position();
+}extern "C"
+JNIEXPORT void JNICALL
+Java_xplay_xplay_XPlay_Play_1or_1Pause(JNIEnv *env, jobject instance) {
+
+    IPlayerProxy* player = IPlayerProxy::Get();
+    player->Pause( !player->isPause() );
 }

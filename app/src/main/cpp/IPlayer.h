@@ -22,6 +22,8 @@ public:
 	virtual bool Start();
 	virtual void InitView( void* win );
 
+    virtual void Pause( bool pause_or_not );
+
     virtual double curr_playing_position();
     virtual void seek_update_progress( double progress );
 

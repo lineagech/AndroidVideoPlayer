@@ -4,12 +4,13 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
+import android.view.View;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 /* Inherit Window Interface */
-public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback, GLSurfaceView.Renderer {
+public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback, GLSurfaceView.Renderer, View.OnClickListener {
     public XPlay(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -21,6 +22,7 @@ public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback, GLSu
 
         /* Need to set on Android 8.0 */
         setRenderer(this);
+        setOnClickListener(this);
     }
 
     @Override
@@ -35,6 +37,7 @@ public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback, GLSu
     }
 
     public native void InitView( Object surface );
+    public native void Play_or_Pause();
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -49,5 +52,10 @@ public class XPlay extends GLSurfaceView implements SurfaceHolder.Callback, GLSu
     @Override
     public void onDrawFrame(GL10 gl) {
 
+    }
+
+    @Override
+    public void onClick(View v) { // for pausing or restoring video playing
+        Play_or_Pause();
     }
 }
