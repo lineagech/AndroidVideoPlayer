@@ -39,6 +39,8 @@ XData IAudioPlay::GetData()
 {
     XData d;
 
+    isRunning = true;
+
     while( !isExit )
     {
         if( isPause() )
@@ -59,7 +61,7 @@ XData IAudioPlay::GetData()
         XSleep(1);
     }
 
-    // Not getting data
+    isRunning = false;
 
     return d;
 }

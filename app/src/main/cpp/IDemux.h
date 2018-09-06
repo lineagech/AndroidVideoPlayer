@@ -17,6 +17,7 @@ public:
     /* Open the files or streaming: rmtp, http, rstp */
     virtual bool Open(const char* url) = 0;
     virtual void Close() = 0;
+    virtual void Seek(double pos) = 0;
 
     virtual XParameter GetVPara() = 0;
     virtual XParameter GetAPara() = 0;

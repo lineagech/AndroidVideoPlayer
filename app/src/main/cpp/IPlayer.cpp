@@ -29,6 +29,8 @@ void IPlayer::Close()
 		vdecode->Stop();
 	if( adecode )
 		adecode->Stop();
+    if( audioPlay )
+        audioPlay->Stop();
 
 	// Clear buffer queue
 	if( vdecode )
@@ -150,7 +152,10 @@ double IPlayer::curr_playing_position()
 
 void IPlayer::seek_update_progress( double progress )
 {
+    Pause(true);
+    if( !demux ) return;
     mutex.lock();
+
     /* clear queue's data */
     if( vdecode ){
         vdecode->Clear();
@@ -160,6 +165,14 @@ void IPlayer::seek_update_progress( double progress )
     }
     if( audioPlay ){
         audioPlay->Clear();
+    }
+
+    demux->Seek( progress );
+    if( !vdecode )
+    {
+        mutex.unlock();
+        Pause(false);
+        return;
     }
 
     /* Transform to pts from progress */
@@ -188,14 +201,14 @@ void IPlayer::seek_update_progress( double progress )
             if( decoded_video_data.size <= 0 ) continue;
             if( decoded_video_data.pts >= updated_ms )
             {
-                vdecode->Notify( decoded_video_data );
+                //vdecode->Notify( decoded_video_data );
                 break;
             }
-
         }
     }
 
     mutex.unlock();
+    Pause(false);
 }
 
 void IPlayer::Main()

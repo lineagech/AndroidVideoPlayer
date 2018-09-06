@@ -30,6 +30,17 @@ void FFDecode::Close()
     mutex.unlock();
 }
 
+void FFDecode::Clear()
+{
+    IDecode::Clear();
+    mutex.lock();
+    if( codec_context )
+    {
+        avcodec_flush_buffers( codec_context ); // clear queue data
+    }
+    mutex.unlock();
+}
+
 bool FFDecode::Open( XParameter para, bool isHard )
 {
     if( !para.para ) return false;

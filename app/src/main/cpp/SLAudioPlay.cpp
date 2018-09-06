@@ -192,6 +192,9 @@ bool SLAudioPlay::StartPlay(XParameter out)
 
     /* Enable it */
     (*pcmQue)->Enqueue(pcmQue,"",1);
+
+    isExit = false;
+
     mutex.unlock();
     XLOGI("SLAudioPlay::StartPlay Succeeded.");
     return true;

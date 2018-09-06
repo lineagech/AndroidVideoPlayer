@@ -24,6 +24,37 @@ void FFDemux::Close()
     mutex.unlock();
 }
 
+void FFDemux::Seek(double pos)
+{
+    int result;
+    if( pos < 0 || pos > 1 )
+    {
+        XLOGE(" Seek Position is not valid.");
+        return;
+    }
+    mutex.lock();
+
+    if( !ic )
+    {
+        mutex.unlock();
+        XLOGE(" There is no valid avformat context when seeking.");
+        return;
+    }
+
+    avformat_flush( ic );
+    long long seek_pts = pos * (ic->streams[videoStream]->duration);
+
+    result = av_seek_frame( ic, videoStream, seek_pts, AVSEEK_FLAG_FRAME|AVSEEK_FLAG_BACKWARD );
+    if( result != 0 )
+    {
+        mutex.unlock();
+        XLOGE(" av_seek_frame Failed.");
+        return;
+    }
+
+    mutex.unlock();
+}
+
 /* Open the files or streaming: rmtp, http, rstp */
 bool FFDemux::Open(const char* url)
 {
