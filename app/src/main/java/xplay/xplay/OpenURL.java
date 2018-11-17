@@ -16,6 +16,8 @@ public class OpenURL extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView( R.layout.openurl );
+
         button_video = findViewById(R.id.playvideo);
         button_rtmp = findViewById(R.id.playrtmp);
 

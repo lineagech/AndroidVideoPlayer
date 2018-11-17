@@ -21,6 +21,7 @@ bool XThread::Start()
     isPaused = false;
     thread thread_(&XThread::ThreadMain, this);
     thread_.detach();
+    return true;
 }
 
 void XThread::ThreadMain()

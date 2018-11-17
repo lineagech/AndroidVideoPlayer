@@ -41,6 +41,7 @@ void IDecode::Update( XData packet )
 
 void IDecode::Main()
 {
+    XLOGE("IDecode::Main()");
     while( !isExit )
     {
         if( isPause() )
@@ -71,6 +72,7 @@ void IDecode::Main()
         /* Get a packet from packet list */
         XData recv_packet = packet_list.front();
         packet_list.pop_front();
+
         if( this->SendPacket( recv_packet ) )
         {
             /* One packet sent can result in multiple decoded frames, using while to handle that */
@@ -80,11 +82,12 @@ void IDecode::Main()
                 if( !decoded_frame.data ) break;
 
                 curr_pts = decoded_frame.pts;
-                //XLOGI("Recv Frame Size %d", decoded_frame.size);
+                XLOGE("Recv Frame Size %d", decoded_frame.size);
                 /* Notify next observer when decoded frame data is ready */
                 this->Notify( decoded_frame );
             }
         }
+
         recv_packet.Drop();
         packet_list_mutex.unlock();
 

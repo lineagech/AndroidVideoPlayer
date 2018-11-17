@@ -77,7 +77,6 @@ Java_xplay_xplay_OpenURL_Open(JNIEnv *env, jobject instance, jstring url_) {
 
     IPlayerProxy* player = IPlayerProxy::Get();
     player->Open( url );
-
     /* Start to play !*/
     player->Start();
 

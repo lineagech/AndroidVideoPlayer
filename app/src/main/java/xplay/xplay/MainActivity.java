@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements Runnable, SeekBar
             public void onClick( View view )
             {
                 Log.e( "XPlay", "open button click" );
-                /* Open path selction window */
+                /* Open path selection window */
                 Intent intent = new Intent(); // for opening the window
                 intent.setClass( MainActivity.this, OpenURL.class );
                 startActivity( intent );

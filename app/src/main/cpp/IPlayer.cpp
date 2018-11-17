@@ -90,8 +90,10 @@ bool IPlayer::Open( const char* path )
 bool IPlayer::Start()
 {	
 	mutex.lock();
-	
+    XLOGE("IPlayer->Start");
+
 	if( vdecode ) vdecode->Start();
+	XLOGE("vdecode->Start");
 
 	if( !demux || !demux->Start() )
 	{	
@@ -99,10 +101,13 @@ bool IPlayer::Start()
 		XLOGE("demux->Start Failed.");
 		return false;
 	}
+    XLOGE("demux->Start");
 
     if( adecode ) adecode->Start();
+    XLOGE("adecode->Start");
 
     if( audioPlay ) audioPlay->StartPlay(outPara);
+    XLOGE("audioPlay->Start");
 
 	XThread::Start();
 
@@ -213,6 +218,7 @@ void IPlayer::seek_update_progress( double progress )
 
 void IPlayer::Main()
 {
+    XLOGE("IPlayer Main()");
 	while( !isExit )
 	{
 		mutex.lock();
