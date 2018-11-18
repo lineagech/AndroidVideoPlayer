@@ -33,10 +33,12 @@ void FFDecode::Close()
 void FFDecode::Clear()
 {
     IDecode::Clear();
+    if(isAudio) XLOGE("FFDecode::Clear()");
     mutex.lock();
     if( codec_context )
     {
         avcodec_flush_buffers( codec_context ); // clear queue data
+        if(isAudio) XLOGE("avcodec_flush_buffers");
     }
     mutex.unlock();
 }
@@ -129,6 +131,7 @@ XData FFDecode::RecvFrame()
         data.size = av_get_bytes_per_sample((AVSampleFormat) frame->format/*AVSampleFormat*/ ) *
                     (frame->nb_samples/* per chanel */) * 2 /* channel num*/ ;
     }
+    data.format = frame->format;
     memcpy(data.datas, frame->data, sizeof(data.datas));
     data.pts = frame->pts;
     curr_pts = data.pts;

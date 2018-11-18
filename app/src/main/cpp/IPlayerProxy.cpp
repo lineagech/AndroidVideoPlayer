@@ -1,5 +1,6 @@
 #include "IPlayerProxy.h"
 #include "FFPlayerBuilder.h"
+#include "XLog.h"
 
 
 void IPlayerProxy::Init( void* vm )
@@ -66,18 +67,25 @@ bool IPlayerProxy::isPause()
 
 double IPlayerProxy::curr_playing_position()
 {
+    double pos = 0.0;
+    mutex.lock();
     if( player )
     {
-        return player->curr_playing_position();
+        pos = player->curr_playing_position();
+        //XLOGE("curr_playing_position %f", pos);
     }
+    mutex.unlock();
+    return pos;
 }
 
 void IPlayerProxy::seek_update_progress( double progress )
 {
+    mutex.lock();
     if( player )
     {
         player->seek_update_progress( progress );
     }
+    mutex.unlock();
 }
 
 

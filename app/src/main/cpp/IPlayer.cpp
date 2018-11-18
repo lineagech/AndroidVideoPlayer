@@ -146,8 +146,9 @@ double IPlayer::curr_playing_position()
     mutex.lock();
 
     double curr_pos = 0.0;
-    if( demux && vdecode )
+    if( demux && vdecode && demux->totalMs )
     {
+        //XLOGE("curr_playing_position %d, %d", vdecode->curr_pts, demux->totalMs);
         curr_pos = (double)vdecode->curr_pts / (double)demux->totalMs;
     }
 
@@ -157,10 +158,10 @@ double IPlayer::curr_playing_position()
 
 void IPlayer::seek_update_progress( double progress )
 {
-    Pause(true);
     if( !demux ) return;
-    mutex.lock();
 
+    Pause(true);
+    mutex.lock();
     /* clear queue's data */
     if( vdecode ){
         vdecode->Clear();
@@ -171,7 +172,6 @@ void IPlayer::seek_update_progress( double progress )
     if( audioPlay ){
         audioPlay->Clear();
     }
-
     demux->Seek( progress );
     if( !vdecode )
     {
@@ -181,7 +181,7 @@ void IPlayer::seek_update_progress( double progress )
     }
 
     /* Transform to pts from progress */
-    double updated_ms = progress * demux->totalMs;
+    int updated_ms = progress * demux->totalMs;
 
     while( !isExit )
     {
@@ -232,7 +232,7 @@ void IPlayer::Main()
 
 		/* Synchronization */
 		int audio_pts = audioPlay->pts;
-		XLOGE("audio pts = %d", audio_pts);
+		//XLOGE("audio pts = %d", audio_pts);
 
 		vdecode->sync_pts = audio_pts;
 

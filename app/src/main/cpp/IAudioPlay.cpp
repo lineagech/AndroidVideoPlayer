@@ -15,6 +15,7 @@ void IAudioPlay::Update(XData data)
 
         if (frames.size() > max_frames) {
             frames_mutex.unlock();
+            XLOGE("IAudioPlay::Update max_frames");
             XSleep(1);
             continue;
         }
@@ -22,6 +23,7 @@ void IAudioPlay::Update(XData data)
         frames_mutex.unlock();
         break;
     }
+    XLOGE("IAudioPlay::Update Exit");
 }
 
 void IAudioPlay::Clear()
@@ -45,6 +47,7 @@ XData IAudioPlay::GetData()
     {
         if( isPause() )
         {
+            XLOGE("IAudioPlay::GetData isPause");
             XSleep(2);
             continue;
         }

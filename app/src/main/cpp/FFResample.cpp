@@ -53,7 +53,7 @@ XData FFResample::Resample( XData indata )
         mutex.unlock();
         return XData();
     }
-    XLOGE("indata size is %d", indata.size);
+    //XLOGE("indata size is %d", indata.size);
 
     /*  Allocate Memory */
     XData out;
@@ -78,7 +78,7 @@ XData FFResample::Resample( XData indata )
         out.Drop();
         return XData();
     }
-    XLOGE("swr_convert Succeeded, %d", len);
+    //XLOGE("swr_convert Succeeded, %d", len);
 
     out.pts = indata.pts;
     mutex.unlock();

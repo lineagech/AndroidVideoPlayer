@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements Runnable, SeekBar
         /* Running this thread is to update SeekBar's progress */
         while( true )
         {
-            seekbar.setProgress((int) GetCurrProgress() * 1000);
+            seekbar.setProgress((int) (GetCurrProgress() * 1000));
             try{
                 Thread.sleep( 30 );
             } catch ( InterruptedException e ) {

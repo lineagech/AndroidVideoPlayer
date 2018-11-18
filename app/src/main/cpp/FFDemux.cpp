@@ -95,7 +95,7 @@ bool FFDemux::Open(const char* url)
 
     this->totalMs = ic->duration/(AV_TIME_BASE/1000); // use micro second
     mutex.unlock();
-    XLOGI("total %d us", this->totalMs);
+    XLOGE("total %d ms", this->totalMs);
 
     /* To get video/audio stream index */
     GetVPara();
@@ -187,8 +187,8 @@ XData FFDemux::Read()
     }
 
     // seconds
-    packet->pts = packet->pts * r2d(ic->streams[packet->stream_index]->time_base);
-    packet->dts = packet->dts * r2d(ic->streams[packet->stream_index]->time_base);
+    packet->pts = packet->pts * (1000*r2d(ic->streams[packet->stream_index]->time_base));
+    packet->dts = packet->dts * (1000*r2d(ic->streams[packet->stream_index]->time_base));
     d.pts = (int)packet->pts;
     //XLOGE("Demux pts %d", d.pts);
     mutex.unlock();

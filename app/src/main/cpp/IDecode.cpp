@@ -41,7 +41,6 @@ void IDecode::Update( XData packet )
 
 void IDecode::Main()
 {
-    XLOGE("IDecode::Main()");
     while( !isExit )
     {
         if( isPause() )
@@ -82,15 +81,14 @@ void IDecode::Main()
                 if( !decoded_frame.data ) break;
 
                 curr_pts = decoded_frame.pts;
-                XLOGE("Recv Frame Size %d", decoded_frame.size);
+                //XLOGE("curr pts %d", curr_pts);
+                //XLOGE("Recv Frame Size %d", decoded_frame.size);
                 /* Notify next observer when decoded frame data is ready */
                 this->Notify( decoded_frame );
             }
         }
-
         recv_packet.Drop();
         packet_list_mutex.unlock();
-
     }
 
 }

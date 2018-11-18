@@ -58,7 +58,7 @@ void XThread::Pause( bool pause_or_not )
     /* Each thread should query isPause() first before continuing running i*/
     for( int count = 0; count < SleepCount; count++ )
     {
-        if( isPaused == isPausing ) break;
+        if( pause_or_not == isPausing ) break;
         XSleep( 10 );
     }
 }

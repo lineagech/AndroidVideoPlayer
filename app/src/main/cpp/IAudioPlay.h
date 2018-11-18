@@ -20,7 +20,7 @@ public:
     virtual bool StartPlay(XParameter out) = 0;
     virtual void Close() = 0;
     virtual void Clear();
-    int max_frames = 100;
+    int max_frames = 500;
     int pts = 0;
 protected:
     std::list<XData> frames;
