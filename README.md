@@ -24,5 +24,17 @@ RecvFrame: avcodec_receive_frame( AVCodecContext* , AVFrame* )
 ```
 Open: SwrContext* = swr_alloc() -> swr_alloc_set_opts() (AV_SAMPLE_FMT_S16)
 Resample: swr_convert( SwrContext* , uint8_t **, int , const uint8_t **, int )
-
 ```
+
+**SLAudioPlay**
+```
+CreateSL: slCreateEngine -> Realize(SLEngineItf) -> GetInterface(SL_IID_ENGINE)
+StartPlay: CreateOutputMix -> Realize(Mixer) -> SLDataLocator_OutputMix, SLDataSink, SLDataLocator_AndroidSimpleBufferQueue, SLDataFormat_PCM, SLDataSource -> CreateAudioPlayer() -> Realize(Player) -> GetInterface(SL_IID_PLAY) -> GetInterface(SL_IID_BUFFERQUEUE) -> RegisterCallback -> SetPlayState(SL_PLAYSTATE_PLAYING) -> Enqueue
+PcmCall: call PlayCall() -> Enqueue
+```
+
+**GLVideoView**
+```
+Render: XTexture::Create() -> Init XTexture -> Draw 
+```
+
