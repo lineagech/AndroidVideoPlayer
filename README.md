@@ -6,9 +6,9 @@ This project is to build a video/audio player based on FFmpeg libraray running o
 `Observer is using observer design pattern that using two threads of being observed and observer, when something are updated, there is a queue to buffer things updated and then observer will consume that queue. `
 
 
-'''
+```
 **FFDemux**
 Constructor:  av_register_all() -> avcodec_register_all() -> avformat_network_init()
 Open: avformat_open_input -> avformat_find_stream_info -> av_find_best_stream (AVMEDIA_TYPE_AUDIO/AVMEDIA_TYPE_VIDEO)
 Read: AVPacket* packet = av_packet_alloc() -> av_read_frame()
-'''
+```
